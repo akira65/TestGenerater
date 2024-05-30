@@ -1,0 +1,3 @@
+[submodule "MethodSearcher"]
+	path = MethodSearcher
+	url = https://github.com/akira65/MethodSearcher
