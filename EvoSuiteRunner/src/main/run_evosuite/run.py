@@ -11,11 +11,10 @@ def run():
     # MethodSearcherのJARファイルを確認
     PARSER_JAR_PATH = ensure_method_searcher_exists(TEST_GEN_DIR)
     
-    # TargetProjectディレクトリ内のサブディレクトリの名前とパスを取得
+    # # TargetProjectディレクトリ内のサブディレクトリの名前とパスを取得
     project_infos = {name: os.path.join(PROJECT_DIR, name) for name in os.listdir(PROJECT_DIR) if os.path.isdir(os.path.join(PROJECT_DIR, name))}
 
     for project_name, project_path in project_infos.items():
-        print(project_name, project_path)
         execute_method_searcher(project_name, project_path, PARSER_JAR_PATH)
 
     method_ref_lists = {}
@@ -31,11 +30,11 @@ def run():
         print("メソッド解析に失敗しました")
 
 
-    # Evosuiteに対応するJava８の環境設定
+    # # Evosuiteに対応するJava８の環境設定
     install_openjdk()
     set_java_home()
 
-    # EvoSuite 実行
+    # # EvoSuite 実行
     if method_ref_lists:
         project_infos_copy = project_infos.copy()
 
@@ -45,8 +44,6 @@ def run():
             if method_ref_lists_key in method_ref_lists:
                 call_evosuite(project_name, project_path, method_ref_lists[method_ref_lists_key], EVO_JAR, f"{EVO_TEST_DIR}/{project_name}/src")
                 del project_infos[project_name]
-            else:
-                print("lfkjslkfjslkfjsl")
 
         if project_infos:
             for project_name in project_infos:
