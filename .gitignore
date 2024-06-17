@@ -1,2 +1,5 @@
-/TargetProject
+/TargetProject/*
 *_methods.txt
+/EvoSuiteRunner/src/__pycache__
+/EvoSuiteRunner/src/evosuite-report
+/EvoSuiteRunner/src/evosuite-tests
