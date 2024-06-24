@@ -1,14 +1,11 @@
 import os
-import subprocess
 import sys
 
-from main.path.paths import EVO_TEST_DIR
+method_pair_info_file_postfix = '_methods.txt'
 
     # ディレクトリが存在するか確認し、存在しなければエラーメッセージを表示
 def check_directory_exists(path):
-    if not os.path.isdir(path):
-        return False
-    return True
+    return os.path.isdir(path)
 
     # OpenJDKをインストール
 def install_openjdk():
@@ -18,16 +15,14 @@ def install_openjdk():
     set_java_home()
 
     # JAVA_HOME環境変数を設定し、パスを更新
-def set_java_home():
-    try:
-        java_home = subprocess.check_output(["brew", "--prefix", "openjdk@8"]).decode().strip()
-        os.environ["JAVA_HOME"] = java_home
-        os.environ["PATH"] = f"{java_home}/bin:{os.environ['PATH']}"
-        java_version = subprocess.check_output(["java", "-version"], stderr=subprocess.STDOUT).decode()
-        print(f"javaのバージョンを変更しました。\n{java_version}")
-    except subprocess.CalledProcessError:
-        print("JAVA_HOMEの設定に失敗しました。", file=sys.stderr)
+def set_java_home(JAVA_HOME: str):
+    if not JAVA_HOME or not check_directory_exists(JAVA_HOME):
+        print("適切なJAVA_HOMEを設定してください", file=sys.stderr)
         sys.exit(1)
+    else:
+        os.environ["JAVA_HOME"] = JAVA_HOME
+        java_bin_path = os.path.join(os.environ["JAVA_HOME"], 'bin')
+        os.environ["PATH"] = java_bin_path + ':' + os.environ['PATH']
 
 def find_java_file_dirs(base_dir: str):
     test_dirs = []
@@ -41,27 +36,33 @@ def find_java_file_dirs(base_dir: str):
 
 def find_project_cp(project_path: str):
     project_cp = os.path.join(project_path, 'target', 'classes')
-    if not check_directory_exists(project_cp):
-        project_cp = os.path.join(project_path, 'build', 'classes', 'java', 'main')
-    else:
+    if check_directory_exists(project_cp):
         return project_cp
-    
-    if not check_directory_exists(project_cp):
-        project_cp = os.path.join(project_path, 'build', 'classes')
-    else:
+        
+    project_cp = os.path.join(project_path, 'build', 'classes', 'java', 'main')
+    if check_directory_exists(project_cp):
         return project_cp
 
-    if not check_directory_exists(project_cp):
-        print(f"{project_path}プロジェクトクラスパスが見つかりませんでした。")
-        return ""
+    project_cp = os.path.join(project_path, 'build', 'classes')
+    if check_directory_exists(project_cp):
+        return project_cp
+    
+    print(f"{project_path}プロジェクトクラスパスが見つかりませんでした。")
+    return ""
 
 def get_method_name(test_dir):
     src_index = test_dir.find("/src/")
 
     if src_index != -1:
-        after_src = test_dir[src_index + 5:]
+        after_src = test_dir[src_index + 12:]
         method_name = after_src.split("/")[0]
         
         return method_name
     else:
         print("srcディレクトリが見つかりませんでした")
+
+# ファイルが存在するか確認し、存在する場合は削除する
+def del_result_csv(file_path: str):
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
