@@ -1,6 +1,7 @@
 # 0から1の間のランダムな浮動小数点数を生成
 import os
 import random
+import sys
 
 
 def get_absolute_path(*paths):
@@ -8,6 +9,7 @@ def get_absolute_path(*paths):
     return os.path.abspath(os.path.join(*paths))
 
 i = random.random()
+
 # スクリプトファイルの絶対パス
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 

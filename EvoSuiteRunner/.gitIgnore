@@ -1,1 +1,6 @@
-evosuite
+/evosuite
+/evosuite1
+
+/src/main/**/*.pyc
+src/jacoco.exec
+/Users/hara_ko/Desktop/testGenerater/EvoSuiteRunner/src/jacoco.exec
